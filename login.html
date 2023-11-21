@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko-KR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Your Date</title>
+
+    <style rel="stylesheet">
+        @font-face {
+            font-family: 'Pretendard-Regular';
+            src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        body {
+            font-family: Pretendard-Regular;
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            background-image: url('static/images/main-background.jpg');
+            backdrop-filter: blur(8px);
+        }
+        
+    </style>
+
+    <!-- Bootstrap 5.3.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="container justify-content-center" style="height: 100vh; display: flex; flex-direction: column;">
+        <div class="container text-center">
+            <div class="row gap-3">
+                    <div class="col col-12 mb-6" style="margin-bottom: 60px;">
+                        <h1 style="font-size: 2rem;">For Your <span style="color: #f06c88;">Date</span></h1>
+                    </div>
+            </div>
+        </div>
+        <form method="post">
+            <div class="container">
+                <div class="row mb-4 justify-content-center">
+                    <div class="col-7">
+                        <label for="userId" class="form-label">아이디</label>
+                        <input id="userId" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="row mb-5 justify-content-center">
+                    <div class="col-7">
+                        <label for="userPassword" class="form-label">비밀번호</label>
+                        <input id="userPassword" type="password" class="form-control">
+                    </div>
+                </div>
+                <div class="row mb-3 justify-content-center">
+                    <div class="col-7">
+                        <button type="submit" class="col-12 btn btn-secondary">로그인</button>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-7">
+                        <button id="homeBtn" type="button" class="col-12 btn btn-outline-light">홈으로</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+
+<script>
+    const homeBtn = document.querySelector('#homeBtn')
+    homeBtn.addEventListener('click', (e) => {
+        console.log('homeBtn tapped')
+        window.location.href = "/index.html"
+    })
+</script>
+
+</html>
