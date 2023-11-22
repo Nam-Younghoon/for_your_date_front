@@ -35,16 +35,13 @@
                     <h1 style="font-size: 3rem;">For Your <span style="color: #f06c88;">Date</span></h1>
                 </div>
                 <div id="getInBtn" class="row m-0 p-0 justify-content-center">
-                    <a class="col-6 btn btn-outline-light" href="/blog/">시작하기</a>
-                </div>
-                <div id="registerBtn" class="row m-0 p-0 justify-content-center">
-                    <a class="col-6 btn btn-outline-light" href="/register.html">회원가입</a>
+                    <a class="col-6 btn btn-outline-light" href="/main.html">시작하기</a>
                 </div>
                 <div id="loginBtn" class="row m-0 p-0 justify-content-center"> 
                     <a class="col-6 btn btn-outline-light" href="/login.html">로그인</a>                    
                 </div>  
                 <div id="logoutBtn" class="row m-0 p-0 justify-content-center"> 
-                    <a class="col-6 btn btn-outline-light" href="/user/login/">로그아웃</a>                    
+                    <a class="col-6 btn btn-outline-light" onclick="logoutBtnTapped()">로그아웃</a>                    
                 </div>
         </div>
     </div>
@@ -52,19 +49,28 @@
 
 <script>
     const accessToken = localStorage.getItem('accessToken')
-    const registerBtn = document.querySelector('#registerBtn')
     const loginBtn = document.querySelector('#loginBtn')
     const logoutBtn = document.querySelector('#logoutBtn')
 
     if(accessToken) {
-        registerBtn.style.display = "none";
         loginBtn.style.display = "none";
         logoutBtn.style.display = "block"
     } else {
-        registerBtn.style.display = "block";
         loginBtn.style.display = "block";
-        logoutBtn.style.display = "none"
+        logoutBtn.style.display = "none";
     }
 </script>
+
+<script>
+    function logoutBtnTapped() {
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("accessToken");
+
+        location.reload();
+    }
+</script>
+
+
+
 
 </html>

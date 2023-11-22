@@ -37,41 +37,112 @@
                     </div>
             </div>
         </div>
-        <form method="post">
-            <div class="container">
-                <div class="row mb-4 justify-content-center">
-                    <div class="col-7">
-                        <label for="userId" class="form-label">아이디</label>
-                        <input id="userId" type="text" class="form-control">
-                    </div>
-                </div>
-                <div class="row mb-5 justify-content-center">
-                    <div class="col-7">
-                        <label for="userPassword" class="form-label">비밀번호</label>
-                        <input id="userPassword" type="password" class="form-control">
-                    </div>
-                </div>
-                <div class="row mb-3 justify-content-center">
-                    <div class="col-7">
-                        <button type="submit" class="col-12 btn btn-secondary">로그인</button>
-                    </div>
-                </div>
-                <div class="row justify-content-center">
-                    <div class="col-7">
-                        <button id="homeBtn" type="button" class="col-12 btn btn-outline-light">홈으로</button>
-                    </div>
+        <div class="container">
+            <div class="row mb-4 justify-content-center">
+                <div class="col-7">
+                    <label for="userId" class="form-label">아이디</label>
+                    <input id="userId" type="text" class="form-control">
                 </div>
             </div>
-        </form>
+            <div class="row mb-4 justify-content-center">
+                <div class="col-7">
+                    <label for="userPassword" class="form-label">비밀번호</label>
+                    <input id="userPassword" type="password" class="form-control">
+                </div>
+            </div>
+            <div id="userError" class="row justify-content-center" style="display: none;">
+                <div class="col-7">
+                    <p style="color: red;">아이디 혹은 비밀번호를 확인해주세요</p>
+                </div>
+            </div>
+            <div class="row mb-3 justify-content-center">
+                <div class="col-7">
+                    <button onclick="loginBtnTapped()" type="button" class="col-12 btn btn-secondary">로그인</button>
+                </div>
+            </div>
+            <div class="row mb-3 justify-content-center">
+                <div class="col-7">
+                    <button id="registerBtn" type="button" class="col-12 btn btn-light">계정이 없나요?</button>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-7">
+                    <button id="homeBtn" type="button" class="col-12 btn btn-outline-light">홈으로</button>
+                </div>
+            </div>
+            
+        </div>
     </div>
 </body>
 
 <script>
     const homeBtn = document.querySelector('#homeBtn')
+    const registerBtn = document.querySelector('#registerBtn')
+
     homeBtn.addEventListener('click', (e) => {
-        console.log('homeBtn tapped')
         window.location.href = "/index.html"
     })
+
+    registerBtn.addEventListener('click', (e) => {
+        window.location.href = "/register.html"
+    })
+</script>
+
+<script>
+    function loginBtnTapped() {
+        const userEmail = document.getElementById("userId")
+        const userPassword = document.getElementById("userPassword")
+
+        
+        if (!userEmail.value || !userPassword.value) {
+            alert("빈 칸이 있어서는 안됩니다.")
+            return
+        }
+        
+
+        url = "http://127.0.0.1:8000/user/login/";
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email: userEmail.value,
+                password: userPassword.value,
+            })
+        }).then((response) => {
+            if (!response.ok) {
+                if(response.status == 400) {
+                    throw new Error(400) 
+                }
+            }
+            return response.json()
+        })
+        .then((data) => {
+            const accessToken = data['access']
+            const refreshToken = data['refresh']
+
+            localStorage.setItem('accessToken', accessToken)
+            localStorage.setItem('refreshToken', refreshToken)
+
+            const queryString = window.location.search
+            nextPage = queryString.split("redirect=")[1]
+            if (nextPage) {
+                window.location.href = "/" + nextPage + ".html"
+            } else {
+                window.location.href = '/index.html'
+            }
+        })
+        .catch((err) => {
+            if(err.message == 400) {
+                const userError = document.getElementById("userError");
+                userError.style.display = "flex";
+            }
+        })
+
+        userEmail.value = "";
+        userPassword.value = "";
+    }
 </script>
 
 </html>

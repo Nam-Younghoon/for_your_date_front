@@ -37,50 +37,72 @@
                     </div>
             </div>
         </div>
-        <form method="post">
-            <div class="container">
-                <div class="row mb-4 justify-content-center">
-                    <div class="col-7">
-                        <label for="userId" class="form-label">아이디</label>
-                        <input id="userId" type="text" class="form-control" placeholder="example@gmail.com">
-                        <div id="userIdHelpBlock" class="form-text">
-                            아이디는 이메일형식입니다
-                        </div>
-                    </div>
-                </div>
-                <div class="row mb-4 justify-content-center">
-                    <div class="col-7">
-                        <label for="userNickname" class="form-label">닉네임</label>
-                        <input id="userNickname" type="text" class="form-control">
-                        <div id="userNicknameHelpBlock" class="form-text">
-                            닉네임은 고유하게 사용됩니다
-                        </div>
-                    </div>
-                </div>
-                <div class="row mb-4 justify-content-center">
-                    <div class="col-7">
-                        <label for="userPassword1" class="form-label">비밀번호</label>
-                        <input id="userPassword1" type="password" class="form-control">
-                    </div>
-                </div>
-                <div class="row mb-5 justify-content-center">
-                    <div class="col-7">
-                        <label for="userPassword2" class="form-label">비밀번호 확인</label>
-                        <input id="userPassword2" type="password" class="form-control">
-                    </div>
-                </div>
-                <div class="row mb-3 justify-content-center">
-                    <div class="col-7">
-                        <button type="submit" class="col-12 btn btn-secondary">회원가입</button>
-                    </div>
-                </div>
-                <div class="row justify-content-center">
-                    <div class="col-7">
-                        <button id="homeBtn" type="button" class="col-12 btn btn-outline-light">홈으로</button>
+        <div class="container">
+            <div class="row mb-4 justify-content-center">
+                <div class="col-7">
+                    <label for="userId" class="form-label">아이디</label>
+                    <input id="userId" type="email" class="form-control" placeholder="example@gmail.com">
+                    <div id="userIdHelpBlock" class="form-text">
+                        아이디는 이메일형식입니다
                     </div>
                 </div>
             </div>
-        </form>
+            <div class="row mb-4 justify-content-center">
+                <div class="col-7">
+                    <label for="userNickname" class="form-label">닉네임</label>
+                    <input id="userNickname" type="text" class="form-control">
+                    <div id="userNicknameHelpBlock" class="form-text">
+                        닉네임은 고유하게 사용됩니다
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-4 justify-content-center">
+                <div class="col-7">
+                    <label for="userPassword1" class="form-label">비밀번호</label>
+                    <input id="userPassword1" type="password" class="form-control">
+                </div>
+            </div>
+            <div class="row mb-4 justify-content-center">
+                <div class="col-7">
+                    <label for="userPassword2" class="form-label">비밀번호 확인</label>
+                    <input id="userPassword2" type="password" class="form-control">
+                </div>
+            </div>
+
+            <!-- 에러 발생 시 노티 -->
+            <div id="userError" class="row justify-content-center" style="display: flex;">
+                <div class="col-7">
+                    <p id="errorMsg" style="color: red;"></p>
+                </div>
+            </div>
+
+            <div class="row mb-3 justify-content-center">
+                <div class="col-7">
+                    <button onclick="registerBtnTapped()" type="button" class="col-12 btn btn-secondary">회원가입</button>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-7">
+                    <button id="homeBtn" type="button" class="col-12 btn btn-outline-light">홈으로</button>
+                </div>
+            </div>
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">알림</h1>
+                        <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+                    </div>
+                    <div class="modal-body">
+                        회원가입 완료되었습니다.
+                    </div>
+                    <div class="modal-footer">
+                        <button id="modalCloseBtn" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                    </div>
+                </div>
+        </div>
     </div>
 </body>
 
@@ -90,6 +112,66 @@
         console.log('homeBtn tapped')
         window.location.href = "/index.html"
     })
+
+    const modalCloseBtn = document.getElementById("modalCloseBtn")
+    modalCloseBtn.addEventListener('click', (e) => {
+        window.location.href = "/index.html"
+    })
+</script>
+
+<script>
+    function registerBtnTapped() {
+        const userEmail = document.getElementById("userId")
+        const userNickname = document.getElementById("userNickname")
+        const userPassword1 = document.getElementById("userPassword1")
+        const userPassword2 = document.getElementById("userPassword2")
+
+        if (!userEmail.value || !userNickname.value || !userPassword1.value || !userPassword2.value) {
+            alert("빈 칸이 있어서는 안됩니다.")
+            return
+        }
+
+        url = "http://127.0.0.1:8000/user/join/";
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email: userEmail.value,
+                nickname: userNickname.value,
+                password1: userPassword1.value,
+                password2: userPassword2.value,
+            })
+        }).then((response) => {
+            if (!response.ok) {
+                if(response.status == 400) {
+                    throw new Error(400)
+                }
+            }
+            return response.json()
+        })
+        .then((data) => {
+            const accessToken = data['access']
+            const refreshToken = data['refresh']
+
+            const staticBackdrop = new bootstrap.Modal("#staticBackdrop")
+            staticBackdrop.show()
+        })
+        .catch((err) => {
+            if(err.message == 400) {
+                const errorMsg = document.getElementById("errorMsg");
+                errorMsg.innerText = "중복된 아이디 혹은 닉네임이거나 비밀번호가 일치하지 않습니다."
+                userError.style.display = "flex";
+            }
+
+            userEmail.value = ""
+            userNickname.value = ""
+            userPassword1.value = ""
+            userPassword2.value = ""
+        })
+
+    }
 </script>
 
 </html>
