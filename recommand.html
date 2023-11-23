@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ko-KR">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>For Your Date</title>
+
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+
+		<link rel="stylesheet" href="./static/css/banner.css" />
+		<link rel="stylesheet" href="./static/css/global.css" />
+		<link rel="stylesheet" href="./static/css/main.css" />
+
+		<style rel="stylesheet">
+			.card-text{
+				font-size:20px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				overflow-wrap: break-word;
+				word-wrap: break-word;
+				word-break: normal;
+				hyphens: auto;
+				display: -webkit-box;
+				-webkit-line-clamp: 3;
+				-webkit-box-orient: vertical;
+			}
+
+			.card{
+				overflow: hidden;
+				background: var(--gray-background-light);
+			}
+
+			.github-image {
+				width: 24px;
+				height: 24px;
+			}
+
+			#wrap {
+				min-height: calc(100vh - 4rem);
+                font-family: Pretendard-Regular;
+			}
+
+            body {
+                background-size: 100% 100%;
+                background-repeat: no-repeat;
+                background-image: url('static/images/main-background.jpg');
+                backdrop-filter: blur(8px);
+            }
+
+			footer {
+				height: 4rem;
+			}
+
+		</style>
+	</head>
+	<body>
+		<!-- header -->
+		<header>
+			<nav class="navbar navbar-expand-lg navbar-white bg-white p-3">
+				<div class="container-fluid">
+					<a class="navbar-brand" href="/main.html">
+						For your date
+					</a>
+					
+					<div class="row align-self-center">
+						<div class="col col-md-auto align-self-center">
+							<a href="/recommand.html" class="btn btn-primary" style="background-color: rgb(55, 170, 236);">
+								<div class="row justify-content-center">
+									<div class="col">
+										<div class="d-flex align-items-center gap-2">
+											<span>추천받기</span>
+										</div>
+									</div>
+								</div>
+							</a>
+						</div>
+
+						<div id="loginOutSection" class="col col-md-auto align-self-center">
+							
+						</div>
+						
+					</div>
+				</div>
+			</nav>
+		</header>
+
+        <div id="wrap">
+            <div class="container justify-content-center" style="height: 100vh; display: flex; flex-direction: column;">
+                <div class="row justify-content-center">
+                    <div class="col-6">
+                        <div class="card p-2">
+                            <div class="card-body">
+                                <div class="card-plan-where mb-4">
+                                    <label for="place-where" class="form-label">어디로 데이트 가시나요?</label>
+                                    <input type="text" class="form-control" id="datePlace" placeholder="서울시/수원시/시흥시.." required="">
+                                </div>
+                
+                                <div class="card-plan-season mb-4">
+                                    <div class="form-label">어느 계절을 컨셉으로 잡을까요?</div>
+                                    <select id="form-select-season" class="form-select">
+                                        <option selected="">선택하세요</option>
+                                        <option value="spring">봄</option>
+                                        <option value="summer">여름</option>
+                                        <option value="fall">가을</option>
+                                        <option value="winter">겨울</option>
+                                    </select>
+                                </div>
+
+                                <div class="date-start-container mb-4">
+                                    <div class="form-label">
+                                        데이트 시작 시간은
+                                    </div>
+                                    <select id="form-select-date-start" class="form-select" required="">
+                                        <option selected="">선택하세요</option>
+                                        <option value="6">오전 6시</option>
+                                        <option value="7">오전 7시</option>
+                                        <option value="8">오전 8시</option>
+                                        <option value="9">오전 9시</option>
+                                        <option value="10">오전 10시</option>
+                                        <option value="11">오전 11시</option>
+                                        <option value="12">오후 12시</option>
+                                        <option value="13">오후 1시</option>
+                                        <option value="14">오후 2시</option>
+                                        <option value="15">오후 3시</option>
+                                        <option value="16">오후 4시</option>
+                                        <option value="17">오후 5시</option>
+                                        <option value="18">오후 6시</option>
+                                        <option value="19">오후 7시</option>
+                                        <option value="20">오후 8시</option>
+                                        <option value="21">오후 9시</option>
+                                        <option value="22">오후 10시</option>
+                                        <option value="23">오후 11시</option>
+                                    </select>
+                                </div>
+        
+                                <div class="date-end-container mb-4">
+                                    <div class="form-label">
+                                        데이트 종료 시간은
+                                    </div>
+                                    <select id="form-select-date-end" class="form-select" required="">
+                                        <option selected="">선택하세요</option>
+                                        <option value="6">오전 6시</option>
+                                        <option value="7">오전 7시</option>
+                                        <option value="8">오전 8시</option>
+                                        <option value="9">오전 9시</option>
+                                        <option value="10">오전 10시</option>
+                                        <option value="11">오전 11시</option>
+                                        <option value="12">오후 12시</option>
+                                        <option value="13">오후 1시</option>
+                                        <option value="14">오후 2시</option>
+                                        <option value="15">오후 3시</option>
+                                        <option value="16">오후 4시</option>
+                                        <option value="17">오후 5시</option>
+                                        <option value="18">오후 6시</option>
+                                        <option value="19">오후 7시</option>
+                                        <option value="20">오후 8시</option>
+                                        <option value="21">오후 9시</option>
+                                        <option value="22">오후 10시</option>
+                                        <option value="23">오후 11시</option>
+                                </select>
+                                </div>
+                                    
+                    
+                                <div class="date-transport-container mb-3">
+                                    <div class="mb-2">교통수단</div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="transport" id="transport-walk" value="walk" checked="">
+                                        <label class="form-check-label" for="transport-walk">
+                                            뚜벅뚜벅
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="transport" id="transport-public" value="public">
+                                        <label class="form-check-label" for="transport-public">
+                                            대중교통
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-4">
+                                        <input class="form-check-input" type="radio" name="transport" id="transport-car" value="myCar">
+                                        <label class="form-check-label" for="transport-car">
+                                            자가용
+                                        </label>
+                                    </div>
+                                    <div class="col-12 btn btn-light btn-lg fs-6" style="color: white; background-color: #f06c88;" onclick="recommandBtnTapped()">추천받기</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+		
+		<!-- footer -->
+		<footer class="footer mt-auto p-3 bg-white" style="bottom: 0;">
+			<div class="d-flex container-fluid justify-content-between">
+				<span class="text-muted fs-5">Copyright 2023. 남영훈 all rights reserved.</span>
+				<div class="row">
+					<div class="col">
+						<a href="https://github.com/Nam-Younghoon" target="_blank">
+							<img src="./static/images/github-mark.svg" class="github-image">
+						</a>
+					</div>
+					<div class="col">
+						<a href="https://www.instagram.com/n.y.hoon/" target="_blank">
+							<img src="./static/images/instagram-icon.svg" class="github-image">
+						</a>
+					</div>
+					<div class="col">
+						<a href="https://velog.io/@huny3410" target="_blank">
+							<img src="./static/images/velog.svg" class="github-image">
+						</a>
+					</div>
+				</div>
+			</div>
+		</footer>
+		<!-- //footer -->
+	</body>
+
+    <script>
+        const accessToken = localStorage.getItem('accessToken', '')
+        const loginOutSection = document.getElementById("loginOutSection")
+
+        if(accessToken) {
+            loginOutSection.innerHTML = `<a id="logout" class="btn" onclick="logout()">
+                                            <div class="row justify-content-center">
+                                                <div class="col">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <span>로그아웃</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>`
+        } else {
+            window.location.href = "/login.html?redirect=recommand"
+        }
+    </script>
+
+    <script>
+        function login() {
+            window.location.href = "/login.html?redirect=recommand"
+        }
+
+        function logout() {
+            localStorage.removeItem("accessToken")
+            localStorage.removeItem("refreshToken")
+
+            window.location.href = "/index.html"
+        }
+
+        function recommandBtnTapped() {
+            // 데이트 장소
+            const datePlace = document.getElementById("datePlace").value
+            // 데이트 계절
+            const dateSeason = document.getElementById("form-select-season")
+            const dateSeasonValue = dateSeason.options[dateSeason.selectedIndex].value
+            // 데이트 시작 시간
+            const dateStart = document.getElementById("form-select-date-start")
+            const dateStartValue = dateStart.options[dateStart.selectedIndex].value
+            const dateStartText = dateStart.options[dateStart.selectedIndex].text
+            // 데이트 종료 시간
+            const dateEnd = document.getElementById("form-select-date-end")
+            const dateEndValue = dateEnd.options[dateEnd.selectedIndex].value
+            const dateEndText = dateEnd.options[dateEnd.selectedIndex].text
+            // 교통 수단
+            const dateTransport = document.querySelector('input[name="transport"]:checked').value;
+            
+            if (!datePlace || dateSeasonValue=="선택하세요" || dateStartValue=="선택하세요" || dateEndValue=="선택하세요") {
+                alert("모든 항목에 대해 입력해주세요.")
+            } else if (dateEndValue - dateStartValue <= 0) {
+                alert("데이트 종료시간이 시작시간보다 빠르거나 같을 수 없습니다.")
+            }
+
+            
+            
+        }
+    </script>
+</html>
+
+

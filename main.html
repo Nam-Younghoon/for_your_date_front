@@ -63,7 +63,7 @@
 					
 					<div class="row align-self-center">
 						<div class="col col-md-auto align-self-center">
-							<a href="/recommand.html" class="btn btn-primary" style="background-color: rgb(55, 170, 236);">
+							<a id="recommandBtn" onclick="recommandBtnTapped()" class="btn btn-primary" style="background-color: rgb(55, 170, 236);">
 								<div class="row justify-content-center">
 									<div class="col">
 										<div class="d-flex align-items-center gap-2">
@@ -150,6 +150,15 @@
             localStorage.removeItem("refreshToken")
 
             window.location.href = "/index.html"
+        }
+
+        function recommandBtnTapped() {
+            const accessToken = localStorage.getItem("accessToken", "")
+            if (accessToken) {
+                window.location.href = '/recommand.html'
+            } else {
+                window.location.href = "/login.html?redirect=recommand"
+            }
         }
     </script>
 </html>
