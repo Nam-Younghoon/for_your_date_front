@@ -25,6 +25,7 @@
 				display: -webkit-box;
 				-webkit-line-clamp: 3;
 				-webkit-box-orient: vertical;
+                
 			}
 
 			.card{
@@ -87,7 +88,8 @@
 		</header>
 
         <div id="wrap">
-            <div class="container justify-content-center" style="height: 100vh; display: flex; flex-direction: column;">
+            <!-- 사용자 정보 입력 창 -->
+            <div id="inputSection" class="container justify-content-center" style="height: 100vh; display: none; flex-direction: column;">
                 <div class="row justify-content-center">
                     <div class="col-6">
                         <div class="card p-2">
@@ -190,6 +192,43 @@
                     </div>
                 </div>
             </div>
+            <!-- end -->
+
+            <!-- 로딩창 -->
+            <div id="loadingSection" class="container justify-content-center" style="height: 100vh; display: none; flex-direction: column;">
+                <div class="row justify-content-center">
+                    <div class="col-12 text-center">
+                        <span class="spinner-grow" style="width: 3rem; height: 3rem; margin-bottom: 60px; color: #f06c88;" role="status"></span>
+                        <span class="spinner-grow" style="width: 3rem; height: 3rem; margin-bottom: 60px; color: #f06c88;" role="status"></span>
+                        <span class="spinner-grow" style="width: 3rem; height: 3rem; margin-bottom: 60px; color: #f06c88;" role="status"></span>
+                    </div>
+                    <div class="col-6 text-center" style="color: white;">
+                        <p>chatGPT가 추천 데이트코스를 생성중입니다</p>
+                        <p>잠시만 기다려주세요</p>
+                        <p>최대 5분이 소요될 수 있습니다</p>
+                    </div>
+                </div>
+            </div>
+            <!-- end -->
+
+            <!-- 결과창 -->
+            <div id="resultSection" class="container justify-content-center" style="height: 100vh; display: none; flex-direction: column;">
+                <div class="row justify-content-center">
+                    <div class="col-6">
+                        <div class="card p-2">
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <textarea id="gpt-answer" class="form-control" style="resize: none; height: 400px;" readonly></textarea>
+                                    <button id="result-save-btn" class="col-12 btn btn-primary btn-plan-now">저장하기</button>
+                                    <button id="home-btn" class="col-12 btn btn-primary btn-plan-previous">홈으로</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end -->
+
         </div>
 		
 		<!-- footer -->
@@ -222,6 +261,19 @@
         const accessToken = localStorage.getItem('accessToken', '')
         const loginOutSection = document.getElementById("loginOutSection")
 
+        const inputSection = document.getElementById("inputSection");
+        const loadingSection = document.getElementById("loadingSection");
+        const resultSection = document.getElementById("resultSection");
+
+        const resultView = document.getElementById("gpt-answer");
+
+        const datePlace = document.getElementById("datePlace")
+        const dateSeason = document.getElementById("form-select-season")
+        const dateStart = document.getElementById("form-select-date-start")
+        const dateEnd = document.getElementById("form-select-date-end")
+
+        inputSection.style.display = "flex";
+
         if(accessToken) {
             loginOutSection.innerHTML = `<a id="logout" class="btn" onclick="logout()">
                                             <div class="row justify-content-center">
@@ -251,29 +303,122 @@
 
         function recommandBtnTapped() {
             // 데이트 장소
-            const datePlace = document.getElementById("datePlace").value
+            const datePlaceText = datePlace.value
+            
             // 데이트 계절
-            const dateSeason = document.getElementById("form-select-season")
             const dateSeasonValue = dateSeason.options[dateSeason.selectedIndex].value
+            const dateSeasonText = dateSeason.options[dateSeason.selectedIndex].text
+
             // 데이트 시작 시간
-            const dateStart = document.getElementById("form-select-date-start")
             const dateStartValue = dateStart.options[dateStart.selectedIndex].value
             const dateStartText = dateStart.options[dateStart.selectedIndex].text
             // 데이트 종료 시간
-            const dateEnd = document.getElementById("form-select-date-end")
             const dateEndValue = dateEnd.options[dateEnd.selectedIndex].value
             const dateEndText = dateEnd.options[dateEnd.selectedIndex].text
             // 교통 수단
             const dateTransport = document.querySelector('input[name="transport"]:checked').value;
             
-            if (!datePlace || dateSeasonValue=="선택하세요" || dateStartValue=="선택하세요" || dateEndValue=="선택하세요") {
+            if (!datePlaceText || dateSeasonValue=="선택하세요" || dateStartValue=="선택하세요" || dateEndValue=="선택하세요") {
                 alert("모든 항목에 대해 입력해주세요.")
+                return
             } else if (dateEndValue - dateStartValue <= 0) {
                 alert("데이트 종료시간이 시작시간보다 빠르거나 같을 수 없습니다.")
+                return
+            }
+            
+            request(datePlaceText, dateSeasonValue, dateStartText, dateEndText, dateTransport)
+        }
+
+        function request(datePlace, dateSeasonValue, dateStartText, dateEndText, dateTransport) {
+            const url = "http://127.0.0.1:8000/chat/chatbot/";
+            
+            if(!accessToken) {
+                window.location.href = "/login.html?redirect=recommand"
             }
 
+            inputSection.style.display = "none";
+            loadingSection.style.display = "flex";
             
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + accessToken
+                },
+                body: JSON.stringify({
+                    datePlace: datePlace,
+                    dateSeason: dateSeasonValue,
+                    dateStart: dateStartText,
+                    dateEnd: dateEndText,
+                    dateTransport: dateTransport,
+                })
+            }).then((response) => {
+                if (!response.ok) {
+                    throw new Error(response.status)
+                }
+                return response.json()
+            }).then((json) => {
+                loadingSection.style.display = "none";
+                resultSection.style.display = "flex";
+
+                const question = json["detail"]["question"]
+                const answer = json["detail"]["answer"]
+
+                resultView.innerHTML = answer
+
+                const resultSaveBtn = document.querySelector("#result-save-btn")
+                resultSaveBtn.addEventListener('click', (event) => {
+                    saveBtnTapped(question, answer)
+                })
+            }).catch((err) => {
+                if(err.message == 400) {
+                    alert("요청 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요")
+                    window.location.href = window.location.href
+                } else if(err.message == 401) {
+                    alert("회원 인증기간이 만료되었습니다");
+                    window.location.href = "/login.html?redirect=recommand"
+    
+                }
+            })
+        }
+
+        function saveBtnTapped(question, answer) {
+            const url = "http://127.0.0.1:8000/chat/chat/";
+
+            if(!accessToken) {
+                window.location.href = "/login.html?redirect=recommand"
+            }
             
+            const dateSeasonText = dateSeason.options[dateSeason.selectedIndex].text
+            const dateStartText = dateStart.options[dateStart.selectedIndex].text
+            const dateEndText = dateEnd.options[dateEnd.selectedIndex].text
+
+            title = datePlace.value + " " + dateSeasonText + " 데이트 코스 추천"
+            datetime = dateStartText + " ~ " + dateEndText
+            question = question
+            answer = answer
+            
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + accessToken
+                },
+                body: JSON.stringify({
+                    title: title,
+                    datetime: datetime,
+                    question: question,
+                    answer: answer
+                })
+            }).then((response) => {
+                if(!response.ok) {
+                    throw new Error(response.status)
+                }
+                return response.json()
+            }).then((json) => {
+                alert("데이트 코스를 저장했습니다!")
+                window.location.href = '/main.html'
+            })
         }
     </script>
 </html>
