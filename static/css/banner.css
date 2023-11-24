@@ -1,6 +1,9 @@
 .banner {
-	position: absolute;
-	background: url(../images/main-background.jpg);
+	position: relative;
+	background: url(../images/main-background.jpg) no-repeat 100% 100% / cover;
+	height: 20em;
+	margin-bottom: -12em;
+	filter: blur(8px);
 }
 
 .banner-contents {

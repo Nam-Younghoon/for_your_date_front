@@ -9,6 +9,8 @@
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 
+        <script src="./common.js"></script>
+
 		<link rel="stylesheet" href="./static/css/banner.css" />
 		<link rel="stylesheet" href="./static/css/global.css" />
 		<link rel="stylesheet" href="./static/css/main.css" />
@@ -25,6 +27,7 @@
 				display: -webkit-box;
 				-webkit-line-clamp: 3;
 				-webkit-box-orient: vertical;
+                
 			}
 
 			.card{
@@ -40,14 +43,19 @@
 			#wrap {
 				min-height: calc(100vh - 4rem);
                 font-family: Pretendard-Regular;
-                background-size: 100% 100%;
+                margin-top: 40px;
+			}
+
+            body {
+                background-size: 100% 50%;
                 background-repeat: no-repeat;
                 background-image: url('static/images/main-background.jpg');
-                filter: blur(8px);
-			}
+                backdrop-filter: blur(8px);
+            }
 
 			footer {
 				height: 4rem;
+                
 			}
 
 		</style>
@@ -63,7 +71,7 @@
 					
 					<div class="row align-self-center">
 						<div class="col col-md-auto align-self-center">
-							<a id="recommandBtn" onclick="recommandBtnTapped()" class="btn btn-primary" style="background-color: rgb(55, 170, 236);">
+							<a href="/recommand.html" class="btn btn-primary" style="background-color: rgb(55, 170, 236);">
 								<div class="row justify-content-center">
 									<div class="col">
 										<div class="d-flex align-items-center gap-2">
@@ -84,7 +92,24 @@
 		</header>
 
         <div id="wrap">
+            <!-- 사용자 정보 입력 창 -->
 
+            <main style="margin-bottom: 40px;">
+                <div id="inputSection" class="container gap-3" style="height: 100%; display: flex; flex-direction: column;">
+                    
+                    <div id="noData" class="row justify-content-center" style="margin-top: 150px; display: none;">
+                        <div class="col-6 text-center">
+                            <div class="alert alert-danger" role="alert">
+                                내역이 없어요!<br> 지금 바로 AI에게 데이트코스를 추천받아보세요.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sample -->
+                    
+                </div>
+            </main>
+            <!-- end -->
         </div>
 		
 		<!-- footer -->
@@ -115,7 +140,6 @@
 
     <script>
         const accessToken = localStorage.getItem('accessToken', '')
-        const loginOutSection = document.getElementById("loginOutSection")
 
         if(accessToken) {
             loginOutSection.innerHTML = `<a id="logout" class="btn" onclick="logout()">
@@ -128,16 +152,68 @@
                                             </div>
                                         </a>`
         } else {
-            loginOutSection.innerHTML = `<a id="login" class="btn" onclick="login()">
-                                            <div class="row justify-content-center">
-                                                <div class="col">
-                                                    <div class="d-flex align-items-center gap-2">
-                                                        <span>로그인</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </a>`
+            window.location.href = "/login.html?redirect=main"
         }
+    </script>
+
+    <script>
+        const url = "http://127.0.0.1:8000/chat/chat/"
+
+        fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + accessToken
+                },
+            }).then((response) => {
+                if (!response.ok) {
+                    throw new Error(response.status)
+                }
+                return response.json()
+            }).then((json) => {
+                const posts = json;
+                const inputSection = document.getElementById("inputSection")
+                if(posts) {
+                    posts.forEach((item) => {
+                        inputSection.innerHTML += 
+                        `<div class="row justify-content-center">
+                        <div class="col-6">
+                            <div class="card p-2">
+                                <div class="card-body">
+                                    <div class="card-title">
+                                        <div class="fs-4">${item.title}</div>
+                                        <div class="fs-5">${item.datetime}</div>
+                                    </div>
+                                    <div class="card-text mt-4 fs-6">
+                                        ${item.answer}
+                                    </div>
+                                </div>
+                                <div class="text-end p-3">
+                                    <a href="/chat.html?seq=${item.id}" style=" font-style: italic; font-weight: bold;">자세히 보기 ></a>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="text-end">질문날짜 : ${dateParser(item.created_at)}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End of Sample -->`
+                    })
+                } else {
+                    const noData = document.getElementById("noData")
+                    noData.style.display = "flex";
+                }
+
+            }).catch((err) => {
+                if(err.message == 400) {
+                    alert("요청 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요")
+                    window.location.href = window.location.href
+                } else if(err.message == 401) {
+                    alert("회원 인증기간이 만료되었습니다");
+                    window.location.href = "/login.html?redirect=main"
+    
+                }
+            })
     </script>
 
     <script>
@@ -151,16 +227,9 @@
 
             window.location.href = "/index.html"
         }
-
-        function recommandBtnTapped() {
-            const accessToken = localStorage.getItem("accessToken", "")
-            if (accessToken) {
-                window.location.href = '/recommand.html'
-            } else {
-                window.location.href = "/login.html?redirect=recommand"
-            }
-        }
     </script>
+
+
 </html>
 
 
