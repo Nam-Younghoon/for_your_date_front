@@ -90,7 +90,7 @@
 				</div>
 			</nav>
 		</header>
-
+        
         <div id="wrap">
             <!-- 사용자 정보 입력 창 -->
 
@@ -157,7 +157,7 @@
     </script>
 
     <script>
-        const url = "http://127.0.0.1:8000/chat/chat/"
+        const url = baseURL + "chat/chat/"
 
         fetch(url, {
                 method: "GET",
@@ -173,7 +173,7 @@
             }).then((json) => {
                 const posts = json;
                 const inputSection = document.getElementById("inputSection")
-                if(posts) {
+                if(posts.length > 0) {
                     posts.forEach((item) => {
                         inputSection.innerHTML += 
                         `<div class="row justify-content-center">
@@ -200,6 +200,7 @@
                     <!-- End of Sample -->`
                     })
                 } else {
+                    console.log('noData')
                     const noData = document.getElementById("noData")
                     noData.style.display = "flex";
                 }
