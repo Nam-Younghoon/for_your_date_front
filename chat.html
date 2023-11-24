@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ko-KR">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>For Your Date</title>
+
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script src="./common.js"></script>
+
+		<link rel="stylesheet" href="./static/css/banner.css" />
+		<link rel="stylesheet" href="./static/css/global.css" />
+		<link rel="stylesheet" href="./static/css/main.css" />
+
+		<style rel="stylesheet">
+			.card-text{
+				font-size:20px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				overflow-wrap: break-word;
+				word-wrap: break-word;
+				word-break: normal;
+				hyphens: auto;
+				display: -webkit-box;
+				-webkit-line-clamp: 3;
+				-webkit-box-orient: vertical;
+                
+			}
+
+			.card{
+				overflow: hidden;
+				background: var(--gray-background-white);
+			}
+
+			.github-image {
+				width: 24px;
+				height: 24px;
+			}
+
+			#wrap {
+				min-height: calc(100vh - 4rem);
+                font-family: Pretendard-Regular;
+                margin-top: 40px;
+			}
+
+            body {
+                background-size: 100% 50%;
+                background-repeat: no-repeat;
+                background-image: url('static/images/main-background.jpg');
+                backdrop-filter: blur(8px);
+            }
+
+			footer {
+				height: 4rem;
+			}
+
+            #questionSection,
+            #answerSection {
+                border: 1px solid #eee;
+                padding: 10px;
+            }
+
+            #questionSection {
+                border-radius: 30px 30px 0 30px;
+                box-shadow: 5px 5px 10px rgba(0,0,0,.25);
+                background-color: #eba0b0;
+                color: white;
+            }
+
+            #answerSection {
+                border-radius: 0px 30px 30px 30px;
+                box-shadow: -5px -5px 10px rgba(0,0,0,.25);
+                background-color: whitesmoke;
+                color: black;
+            }
+
+		</style>
+	</head>
+	<body>
+		<!-- header -->
+		<header>
+			<nav class="navbar navbar-expand-lg navbar-white bg-white p-3">
+				<div class="container-fluid">
+					<a class="navbar-brand" href="/main.html">
+						For your date
+					</a>
+					
+					<div class="row align-self-center">
+						<div class="col col-md-auto align-self-center">
+							<a href="/recommand.html" class="btn btn-primary" style="background-color: rgb(55, 170, 236);">
+								<div class="row justify-content-center">
+									<div class="col">
+										<div class="d-flex align-items-center gap-2">
+											<span>추천받기</span>
+										</div>
+									</div>
+								</div>
+							</a>
+						</div>
+
+						<div id="loginOutSection" class="col col-md-auto align-self-center">
+							
+						</div>
+						
+					</div>
+				</div>
+			</nav>
+		</header>
+
+        <div id="wrap">
+            <main style="margin-bottom: 40px;">
+                <div id="inputSection" class="container p-5" style="height: 100%; flex-direction: column;">
+                    <div class="row justify-content-center">
+                        <div class="col-8">
+                            <div class="card p-2">
+                                <div class="card-body">
+                                    <div id="questionSection" class="text-end mt-4 fs-6">
+                                        
+                                    </div>
+                                    <div id="answerSection" class="text-start mt-4 fs-6">
+                                        
+                                    </div>
+                                </div>
+                                <div class="card-footer p-4">
+                                    <div class="row g-3">
+                                        <button onclick="deleteBtnTapped()" id="deleteBtn" class="col-12 btn btn-danger">삭제하기</button>
+                                        <button onclick="backBtnTapped()" id="backBtn" class="col-12 btn btn-secondary">목록으로</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+		
+		<!-- footer -->
+		<footer class="footer mt-auto p-3 bg-white" style="bottom: 0;">
+			<div class="d-flex container-fluid justify-content-between">
+				<span class="text-muted fs-5">Copyright 2023. 남영훈 all rights reserved.</span>
+				<div class="row">
+					<div class="col">
+						<a href="https://github.com/Nam-Younghoon" target="_blank">
+							<img src="./static/images/github-mark.svg" class="github-image">
+						</a>
+					</div>
+					<div class="col">
+						<a href="https://www.instagram.com/n.y.hoon/" target="_blank">
+							<img src="./static/images/instagram-icon.svg" class="github-image">
+						</a>
+					</div>
+					<div class="col">
+						<a href="https://velog.io/@huny3410" target="_blank">
+							<img src="./static/images/velog.svg" class="github-image">
+						</a>
+					</div>
+				</div>
+			</div>
+		</footer>
+		<!-- //footer -->
+	</body>
+
+    <script>
+        const accessToken = localStorage.getItem('accessToken', '')
+        const loginOutSection = document.getElementById("loginOutSection")
+        const questionSection = document.getElementById("questionSection")
+        const answerSection = document.getElementById("answerSection")
+
+        if(accessToken) {
+            loginOutSection.innerHTML = `<a id="logout" class="btn" onclick="logout()">
+                                            <div class="row justify-content-center">
+                                                <div class="col">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <span>로그아웃</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>`
+        } else {
+            window.location.href = "/login.html?redirect=recommand"
+        }
+    </script>
+
+    <script>
+        const queryString = window.location.search
+        const seq = queryString.split("seq=")[1]
+        
+        const url = baseURL + 'chat/chat/' + seq + "/"
+
+        fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + accessToken
+                },
+            }).then((response) => {
+                if(!response.ok) {
+                    throw new Error(response.status)
+                }
+                return response.json()
+            }).then((json) => {
+                questionSection.innerText = json["question"]
+                answerSection.innerText = json["answer"]
+            })
+
+        
+    </script>
+
+    <script>
+        function login() {
+            window.location.href = "/login.html?redirect=recommand"
+        }
+
+        function logout() {
+            localStorage.removeItem("accessToken")
+            localStorage.removeItem("refreshToken")
+
+            window.location.href = "/index.html"
+        }
+
+        function deleteBtnTapped() {
+            const isDelete = confirm("정말 삭제하시겠어요?")
+            if(isDelete) {
+                
+                fetch(url, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + accessToken
+                    },
+                }).then((response) => {
+                    if(!response.ok) {
+                        throw new Error(response.status)
+                    }
+                    return response.status
+                }).then((code) => {
+                    window.location.href = '/main.html'
+                })
+
+            } else {
+                return
+            }
+        }
+
+        function backBtnTapped() {
+            window.location.href = '/main.html'
+        }
+    </script>
+
+        
+</html>
+
+
