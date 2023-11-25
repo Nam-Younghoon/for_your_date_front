@@ -64,12 +64,12 @@
 			<nav class="navbar navbar-expand-lg navbar-white bg-white p-3">
 				<div class="container-fluid">
 					<a class="navbar-brand" href="/main.html">
-						For your date
+						FOR YOUR DATE
 					</a>
 					
 					<div class="row align-self-center">
 						<div class="col col-md-auto align-self-center">
-							<a href="/recommand.html" class="btn btn-primary" style="background-color: rgb(55, 170, 236);">
+							<a href="/recommand.html" class="btn btn-primary" style="background-color: #f06c88; border-color: #f06c88;">
 								<div class="row justify-content-center">
 									<div class="col">
 										<div class="d-flex align-items-center gap-2">
@@ -222,7 +222,7 @@
                                 <div class="row g-3">
                                     <textarea id="gpt-answer" class="form-control" style="resize: none; height: 400px;" readonly></textarea>
                                     <button id="result-save-btn" class="col-12 btn btn-primary btn-plan-now">저장하기</button>
-                                    <button id="home-btn" class="col-12 btn btn-primary btn-plan-previous">홈으로</button>
+                                    <button id="home-btn" class="col-12 btn btn-secondary btn-plan-previous">홈으로</button>
                                 </div>
                             </div>
                         </div>
@@ -260,7 +260,8 @@
 	</body>
 
     <script>
-        const accessToken = localStorage.getItem('accessToken', '')
+        const checkLogin = isLogin()
+
         const loginOutSection = document.getElementById("loginOutSection")
 
         const inputSection = document.getElementById("inputSection");
@@ -276,7 +277,7 @@
 
         inputSection.style.display = "flex";
 
-        if(accessToken) {
+        if(checkLogin) {
             loginOutSection.innerHTML = `<a id="logout" class="btn" onclick="logout()">
                                             <div class="row justify-content-center">
                                                 <div class="col">
@@ -287,13 +288,13 @@
                                             </div>
                                         </a>`
         } else {
-            window.location.href = "/login.html?redirect=recommand"
+            window.location.href = "/login.html?redirect=recommand.html"
         }
     </script>
 
     <script>
         function login() {
-            window.location.href = "/login.html?redirect=recommand"
+            window.location.href = "/login.html?redirect=recommand.html"
         }
 
         function logout() {
@@ -334,63 +335,65 @@
         function request(datePlace, dateSeasonValue, dateStartText, dateEndText, dateTransport) {
             const url = baseURL + "chat/chatbot/";
             
-            if(!accessToken) {
-                window.location.href = "/login.html?redirect=recommand"
-            }
-
             inputSection.style.display = "none";
             loadingSection.style.display = "flex";
-            
-            fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + accessToken
-                },
-                body: JSON.stringify({
-                    datePlace: datePlace,
-                    dateSeason: dateSeasonValue,
-                    dateStart: dateStartText,
-                    dateEnd: dateEndText,
-                    dateTransport: dateTransport,
-                })
-            }).then((response) => {
-                if (!response.ok) {
-                    throw new Error(response.status)
-                }
-                return response.json()
-            }).then((json) => {
-                loadingSection.style.display = "none";
-                resultSection.style.display = "flex";
 
-                const question = json["detail"]["question"]
-                const answer = json["detail"]["answer"]
-
-                resultView.innerHTML = answer
-
-                const resultSaveBtn = document.querySelector("#result-save-btn")
-                resultSaveBtn.addEventListener('click', (event) => {
-                    saveBtnTapped(question, answer)
-                })
-            }).catch((err) => {
-                if(err.message == 400) {
-                    alert("요청 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요")
-                    window.location.href = window.location.href
-                } else if(err.message == 401) {
-                    alert("회원 인증기간이 만료되었습니다");
-                    window.location.href = "/login.html?redirect=recommand"
+            checkTokenExpired('recommand', (accessToken) => {
+                fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + accessToken
+                    },
+                    body: JSON.stringify({
+                        datePlace: datePlace,
+                        dateSeason: dateSeasonValue,
+                        dateStart: dateStartText,
+                        dateEnd: dateEndText,
+                        dateTransport: dateTransport,
+                    })
+                }).then((response) => {
+                    if (!response.ok) {
+                        throw new Error(response.status)
+                    }
+                    return response.json()
+                }).then((json) => {
+                    loadingSection.style.display = "none";
+                    resultSection.style.display = "flex";
     
-                }
+                    const question = json["detail"]["question"]
+                    const answer = json["detail"]["answer"]
+    
+                    resultView.innerHTML = answer
+    
+                    const resultSaveBtn = document.querySelector("#result-save-btn")
+                    resultSaveBtn.addEventListener('click', (event) => {
+                        saveBtnTapped(question, answer)
+                    })
+                }).catch((err) => {
+                    if(err.message == 400) {
+                        alert("요청 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요")
+                        window.location.href = window.location.href
+                    } else if(err.message == 401) {
+                        alert("회원 인증기간이 만료되었습니다");
+                        window.location.href = "/login.html?redirect=recommand.html"
+                    } else if(err.message == 403) {
+                        alert("접근 권한이 없습니다")
+                        history.back()
+                    } else if (err.message == 404) {
+                        alert("존재하지 않는 게시물입니다")
+                        history.back()
+                    } else if (err.message == 429) {
+                        alert("하루에 5번까지만 추천받을 수 있습니다")
+                        history.back()
+                    }
+                })
             })
         }
 
         function saveBtnTapped(question, answer) {
             const url = baseURL + "chat/chat/";
 
-            if(!accessToken) {
-                window.location.href = "/login.html?redirect=recommand"
-            }
-            
             const dateSeasonText = dateSeason.options[dateSeason.selectedIndex].text
             const dateStartText = dateStart.options[dateStart.selectedIndex].text
             const dateEndText = dateEnd.options[dateEnd.selectedIndex].text
@@ -399,27 +402,37 @@
             datetime = dateStartText + " ~ " + dateEndText
             question = question
             answer = answer
-            
-            fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + accessToken
-                },
-                body: JSON.stringify({
-                    title: title,
-                    datetime: datetime,
-                    question: question,
-                    answer: answer
+
+            checkTokenExpired("recommand", (accessToken) => {
+                fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + accessToken
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                        datetime: datetime,
+                        question: question,
+                        answer: answer
+                    })
+                }).then((response) => {
+                    if(!response.ok) {
+                        throw new Error(response.status)
+                    }
+                    return response.json()
+                }).then((json) => {
+                    alert("데이트 코스를 저장했습니다!")
+                    window.location.href = '/main.html'
+                }).catch((err) => {
+                    if(err.message == 403) {
+                        alert("접근 권한이 없습니다")
+                        history.back()
+                    } else if (err.message == 404) {
+                        alert("존재하지 않는 게시물입니다")
+                        history.back()
+                    }
                 })
-            }).then((response) => {
-                if(!response.ok) {
-                    throw new Error(response.status)
-                }
-                return response.json()
-            }).then((json) => {
-                alert("데이트 코스를 저장했습니다!")
-                window.location.href = '/main.html'
             })
         }
     </script>
