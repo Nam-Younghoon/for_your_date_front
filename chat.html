@@ -90,7 +90,7 @@
 					
 					<div class="row align-self-center">
 						<div class="col col-md-auto align-self-center">
-							<a href="/recommand.html" class="btn btn-primary" style="background-color: rgb(55, 170, 236);">
+							<a href="/recommand.html" class="btn btn-primary" style="background-color: #f06c88; border-color: #f06c88;">
 								<div class="row justify-content-center">
 									<div class="col">
 										<div class="d-flex align-items-center gap-2">
@@ -169,6 +169,13 @@
         const questionSection = document.getElementById("questionSection")
         const answerSection = document.getElementById("answerSection")
 
+        const queryString = window.location.search
+        const seq = queryString.split("seq=")[1]
+
+        if(!seq) {
+            alert('존재하지 않는 페이지입니다.')
+        }
+
         if(accessToken) {
             loginOutSection.innerHTML = `<a id="logout" class="btn" onclick="logout()">
                                             <div class="row justify-content-center">
@@ -180,38 +187,44 @@
                                             </div>
                                         </a>`
         } else {
-            window.location.href = "/login.html?redirect=recommand"
+            window.location.href = `/login.html?redirect=chat.html?seq=${seq}`
         }
     </script>
 
     <script>
-        const queryString = window.location.search
-        const seq = queryString.split("seq=")[1]
-        
         const url = baseURL + 'chat/chat/' + seq + "/"
 
-        fetch(url, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + accessToken
-                },
-            }).then((response) => {
-                if(!response.ok) {
-                    throw new Error(response.status)
-                }
-                return response.json()
-            }).then((json) => {
-                questionSection.innerText = json["question"]
-                answerSection.innerText = json["answer"]
-            })
+        refreshToken(`chat.html?seq=${seq}`, (accessToken) => {
+            fetch(url, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + accessToken
+                    },
+                }).then((response) => {
+                    if(!response.ok) {
+                        throw new Error(response.status)
+                    }
+                    return response.json()
+                }).then((json) => {
+                    questionSection.innerText = json["question"]
+                    answerSection.innerText = json["answer"]
+                }).catch((statusCode) => {
+                    if(statusCode.message == 403) {
+                        alert("접근 권한이 없습니다");
+                    } else if (statusCode.message == 404) {
+                        alert("존재하지 않는 게시물입니다");
+                    }
+                    history.back()
+                })
+        })
 
         
     </script>
 
     <script>
         function login() {
-            window.location.href = "/login.html?redirect=recommand"
+            window.location.href = `/login.html?redirect=chat.html?seq=${seq}`
         }
 
         function logout() {
@@ -224,22 +237,29 @@
         function deleteBtnTapped() {
             const isDelete = confirm("정말 삭제하시겠어요?")
             if(isDelete) {
-                
-                fetch(url, {
-                    method: "DELETE",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + accessToken
-                    },
-                }).then((response) => {
-                    if(!response.ok) {
-                        throw new Error(response.status)
-                    }
-                    return response.status
-                }).then((code) => {
-                    window.location.href = '/main.html'
+                refreshToken(`chat.html?seq=${seq}`, (accessToken) => {
+                    fetch(url, {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": "Bearer " + accessToken
+                        },
+                    }).then((response) => {
+                        if(!response.ok) {
+                            throw new Error(response.status)
+                        }
+                        return response.status
+                    }).then((code) => {
+                        window.location.href = '/main.html'
+                    }).catch((statusCode) => {
+                        if(statusCode.message == 403) {
+                            alert("접근 권한이 없습니다");
+                        } else if (statusCode.message == 404) {
+                            alert("존재하지 않는 게시물입니다");
+                        }
+                        history.back()
+                    })
                 })
-
             } else {
                 return
             }
