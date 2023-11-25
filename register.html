@@ -109,6 +109,15 @@
 </body>
 
 <script>
+    const checkLogin = isLogin()
+
+    if(checkLogin) {
+        alert("로그아웃을 진행해주세요")
+        window.location.href = '/index.html'
+    }
+</script>
+
+<script>
     const homeBtn = document.querySelector('#homeBtn')
     homeBtn.addEventListener('click', (e) => {
         console.log('homeBtn tapped')
