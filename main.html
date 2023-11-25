@@ -66,12 +66,12 @@
 			<nav class="navbar navbar-expand-lg navbar-white bg-white p-3">
 				<div class="container-fluid">
 					<a class="navbar-brand" href="/main.html">
-						For your date
+						FOR YOUR DATE
 					</a>
 					
 					<div class="row align-self-center">
 						<div class="col col-md-auto align-self-center">
-							<a href="/recommand.html" class="btn btn-primary" style="background-color: rgb(55, 170, 236);">
+							<a href="/recommand.html" class="btn btn-primary" style="background-color: #f06c88; border-color: #f06c88;">
 								<div class="row justify-content-center">
 									<div class="col">
 										<div class="d-flex align-items-center gap-2">
@@ -139,9 +139,9 @@
 	</body>
 
     <script>
-        const accessToken = localStorage.getItem('accessToken', '')
+        const checkLogin = isLogin()
 
-        if(accessToken) {
+        if(checkLogin) {
             loginOutSection.innerHTML = `<a id="logout" class="btn" onclick="logout()">
                                             <div class="row justify-content-center">
                                                 <div class="col">
@@ -152,14 +152,15 @@
                                             </div>
                                         </a>`
         } else {
-            window.location.href = "/login.html?redirect=main"
+            window.location.href = "/login.html?redirect=main.html"
         }
     </script>
 
     <script>
         const url = baseURL + "chat/chat/"
 
-        fetch(url, {
+        checkTokenExpired('main', (accessToken) => {
+            fetch(url, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -211,15 +212,21 @@
                     window.location.href = window.location.href
                 } else if(err.message == 401) {
                     alert("회원 인증기간이 만료되었습니다");
-                    window.location.href = "/login.html?redirect=main"
-    
+                    window.location.href = "/login.html?redirect=main.html"
+                } else if(err.message == 403) {
+                    alert("접근 권한이 없습니다")
+                    history.back()
+                } else if (err.message == 404) {
+                    alert("존재하지 않는 게시물입니다")
+                    history.back()
                 }
             })
+        })
     </script>
 
     <script>
         function login() {
-            window.location.href = "/login.html?redirect=main"
+            window.location.href = "/login.html?redirect=main.html"
         }
 
         function logout() {
