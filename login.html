@@ -78,6 +78,14 @@
 </body>
 
 <script>
+    const checkLogin = isLogin()
+
+    if(checkLogin) {
+        window.location.href = "/index.html"
+    }
+</script>
+
+<script>
     const homeBtn = document.querySelector('#homeBtn')
     const registerBtn = document.querySelector('#registerBtn')
 
@@ -128,7 +136,7 @@
             const queryString = window.location.search
             nextPage = queryString.split("redirect=")[1]
             if (nextPage) {
-                window.location.href = "/" + nextPage + ".html"
+                window.location.href = "/" + nextPage
             } else {
                 window.location.href = '/index.html'
             }
@@ -137,6 +145,12 @@
             if(err.message == 400) {
                 const userError = document.getElementById("userError");
                 userError.style.display = "flex";
+            } else if(err.message == 403) {
+                alert("접근 권한이 없습니다")
+                history.back()
+            } else if (err.message == 404) {
+                alert("존재하지 않는 게시물입니다")
+                history.back()
             }
         })
 
