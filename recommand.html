@@ -207,7 +207,7 @@
                     <div class="col-6 text-center" style="color: white;">
                         <p>chatGPT가 추천 데이트코스를 생성중입니다</p>
                         <p>잠시만 기다려주세요</p>
-                        <p>최대 5분이 소요될 수 있습니다</p>
+                        <p>최대 1분정도 소요될 수 있습니다</p>
                     </div>
                 </div>
             </div>
@@ -275,6 +275,11 @@
         const dateStart = document.getElementById("form-select-date-start")
         const dateEnd = document.getElementById("form-select-date-end")
 
+        const homeBtn = document.getElementById("home-btn")
+        homeBtn.addEventListener('click', (e) => {
+            window.location.href = '/main.html'
+        })
+
         inputSection.style.display = "flex";
 
         if(checkLogin) {
@@ -338,7 +343,7 @@
             inputSection.style.display = "none";
             loadingSection.style.display = "flex";
 
-            checkTokenExpired('recommand', (accessToken) => {
+            checkTokenExpired('recommand.html', (accessToken) => {
                 fetch(url, {
                     method: "POST",
                     headers: {
@@ -406,7 +411,7 @@
             question = question
             answer = answer
 
-            checkTokenExpired("recommand", (accessToken) => {
+            checkTokenExpired("recommand.html", (accessToken) => {
                 fetch(url, {
                     method: "POST",
                     headers: {

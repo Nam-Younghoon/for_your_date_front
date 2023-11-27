@@ -159,7 +159,7 @@
     <script>
         const url = baseURL + "chat/chat/"
 
-        checkTokenExpired('main', (accessToken) => {
+        checkTokenExpired('main.html', (accessToken) => {
             fetch(url, {
                 method: "GET",
                 headers: {
