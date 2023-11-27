@@ -1,4 +1,4 @@
-const baseURL = "http://13.125.153.167/"
+const baseURL = "https://api-for-your-date.kro.kr/"
 
 function dateParser(dateStr) {
     const date = new Date(dateStr)
