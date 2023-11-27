@@ -388,7 +388,7 @@
                         history.back()
                     } else if (err.message == 504) {
                         alert("서버가 원활하지 않습니다. 잠시 후 다시 시도해주세요")
-                        location.reload();
+                        location.reload(true)
                     }
                 })
             })
