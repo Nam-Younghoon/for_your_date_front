@@ -40,7 +40,7 @@ function checkTokenExpired(redirectUrl, callback) {
             }
             callback(accessToken)
         }).catch((statusCode) => {
-            if(statusCode == 401) {
+            if(statusCode.message == 401) {
                 refreshToken(redirectUrl, (accessToken) => {
                     callback(accessToken)
                 })
@@ -76,7 +76,7 @@ function refreshToken(redirectUrl, callback) {
             localStorage.setItem('accessToken', json['access'])
             callback(json['access'])
         }).catch((statusCode) => {
-            if(statusCode == 401) {
+            if(statusCode.message == 401) {
                 alert('세션이 만료되었습니다. 재로그인해주세요')
                 localStorage.removeItem("accessToken")
                 localStorage.removeItem("refreshToken")
